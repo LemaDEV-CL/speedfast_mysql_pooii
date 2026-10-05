@@ -1,8 +1,8 @@
 package cl.lema.models;
 
 /**
- * Contiene los datos comunes y el estado de un pedido.
- * Al guardarlo mediante PedidoDAO recibe el ID generado por MySQL.
+ * Clase base para los distintos tipos de pedido de SpeedFast.
+ * Contiene los datos comunes y el estado asociado al pedido.
  */
 public abstract class Pedido {
 

@@ -1,53 +1,90 @@
 package cl.lema.vista;
 
-import javax.swing.*;
-import java.awt.GridLayout;
-import cl.lema.dao.RepartidorDAO;
-import cl.lema.hilos.Repartidor;
-import java.util.List;
 import cl.lema.dao.EntregaDAO;
+import cl.lema.dao.PedidoDAO;
+import cl.lema.dao.RepartidorDAO;
+import cl.lema.models.Entrega;
+import cl.lema.models.Repartidor;
+
+import javax.swing.*;
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import cl.lema.dao.PedidoDAO;
+import java.util.List;
 
 /**
- * Carga pedidos pendientes y repartidores desde MySQL mediante los DAO.
- * Guarda la entrega y actualiza el estado del pedido a EN_REPARTO.
+ * Permite asignar un repartidor a un pedido pendiente.
+ * Registra la entrega y actualiza el estado del pedido en MySQL.
  */
+
 public class VentanaAsignarRepartidor extends JFrame {
 
     private JComboBox<Integer> comboPedidos;
     private JComboBox<Repartidor> comboRepartidores;
+
     private JButton btnIniciar;
+
     private final RepartidorDAO repartidorDAO = new RepartidorDAO();
     private final EntregaDAO entregaDAO = new EntregaDAO();
     private final PedidoDAO pedidoDAO = new PedidoDAO();
 
     public VentanaAsignarRepartidor() {
+
         setTitle("Asignar repartidor");
+
         setSize(450, 200);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridLayout(3, 2, 10, 10));
 
-        comboPedidos = new JComboBox<>();
+        setDefaultCloseOperation(
+                JFrame.DISPOSE_ON_CLOSE
+        );
 
-        comboRepartidores = new JComboBox<>();
+        setLayout(
+                new GridLayout(
+                        3,
+                        2,
+                        10,
+                        10
+                )
+        );
 
-        btnIniciar = new JButton("Iniciar entrega");
+        comboPedidos =
+                new JComboBox<>();
 
-        btnIniciar.addActionListener(e -> iniciarEntrega());
+        comboRepartidores =
+                new JComboBox<>();
 
-        add(new JLabel("ID del pedido:"));
+        btnIniciar =
+                new JButton(
+                        "Iniciar entrega"
+                );
+
+        btnIniciar.addActionListener(
+                e -> iniciarEntrega()
+        );
+
+        add(
+                new JLabel(
+                        "ID del pedido:"
+                )
+        );
+
         add(comboPedidos);
 
-        add(new JLabel("Repartidor:"));
+        add(
+                new JLabel(
+                        "Repartidor:"
+                )
+        );
+
         add(comboRepartidores);
 
         add(new JLabel(""));
+
         add(btnIniciar);
 
         cargarPedidosPendientes();
         cargarRepartidores();
+
         setLocationRelativeTo(null);
     }
 
@@ -58,7 +95,9 @@ public class VentanaAsignarRepartidor extends JFrame {
         List<Integer> pedidosPendientes =
                 pedidoDAO.listarPendientes();
 
-        for (Integer id : pedidosPendientes) {
+        for (Integer id :
+                pedidosPendientes) {
+
             comboPedidos.addItem(id);
         }
     }
@@ -68,36 +107,58 @@ public class VentanaAsignarRepartidor extends JFrame {
         comboRepartidores.removeAllItems();
 
         List<Repartidor> repartidores =
-                repartidorDAO.listarTodos();
+                repartidorDAO.readAll();
 
-        for (Repartidor repartidor : repartidores) {
-            comboRepartidores.addItem(repartidor);
+        for (Repartidor repartidor :
+                repartidores) {
+
+            comboRepartidores.addItem(
+                    repartidor
+            );
         }
     }
 
     private void iniciarEntrega() {
-        Integer id = (Integer) comboPedidos.getSelectedItem();
-        Repartidor repartidor = (Repartidor) comboRepartidores.getSelectedItem();
 
-        if (id == null || repartidor == null) {
+        Integer idPedido =
+                (Integer)
+                        comboPedidos
+                                .getSelectedItem();
+
+        Repartidor repartidor =
+                (Repartidor)
+                        comboRepartidores
+                                .getSelectedItem();
+
+        if (idPedido == null
+                || repartidor == null) {
+
             JOptionPane.showMessageDialog(
                     this,
                     "Selecciona un pedido y un repartidor."
             );
+
             return;
         }
 
-        boolean entregaGuardada =
-                entregaDAO.guardar(
-                        id,
+        Entrega entrega =
+                new Entrega(
+                        idPedido,
                         repartidor.getId(),
                         LocalDate.now(),
                         LocalTime.now()
                 );
+
+        boolean entregaGuardada =
+                entregaDAO.create(
+                        entrega
+                );
+
         if (!entregaGuardada) {
+
             JOptionPane.showMessageDialog(
                     this,
-                    "El pedido fue asignado pero no se pudo guardar en la base de datos."
+                    "No se pudo guardar la entrega."
             );
 
             return;
@@ -105,7 +166,7 @@ public class VentanaAsignarRepartidor extends JFrame {
 
         boolean estadoActualizado =
                 pedidoDAO.actualizarEstado(
-                        id,
+                        idPedido,
                         "EN_REPARTO"
                 );
 
@@ -123,7 +184,10 @@ public class VentanaAsignarRepartidor extends JFrame {
 
         JOptionPane.showMessageDialog(
                 this,
-                "Pedido #" + id + " asignado a " + repartidor.getNombre()
+                "Pedido #"
+                        + idPedido
+                        + " asignado a "
+                        + repartidor.getNombre()
                         + ". Estado: EN_REPARTO."
         );
     }

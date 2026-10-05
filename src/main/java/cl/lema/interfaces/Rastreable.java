@@ -1,6 +1,6 @@
 package cl.lema.interfaces;
 /**
- * Define la consulta del historial de entregas en consola de semanas anteriores.
+ * Define el comportamiento necesario para consultar el historial de entregas.
  */
 public interface Rastreable {
 

@@ -3,9 +3,10 @@ import cl.lema.interfaces.Asignable;
 import cl.lema.interfaces.Cancelable;
 import cl.lema.interfaces.Despachable;
 /**
- * Representa una encomienda con peso y volumen.
- * Calcula el tiempo de entrega según la distancia y se registra como ENCOMIENDA en MySQL.
+ * Representa un pedido de encomienda.
+ * Incluye información relacionada con el peso y volumen transportado.
  */
+
 public class PedidoEncomienda extends Pedido implements Asignable, Cancelable, Despachable {
 
     private int peso;

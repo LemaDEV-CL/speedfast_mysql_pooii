@@ -5,27 +5,33 @@ import cl.lema.models.Pedido;
 import cl.lema.models.PedidoComida;
 import cl.lema.models.PedidoEncomienda;
 import cl.lema.models.PedidoExpress;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Guarda y consulta pedidos en MySQL mediante JDBC.
- * Recupera el ID generado y permite actualizar el estado del pedido.
+ * Gestiona la persistencia de pedidos en MySQL mediante JDBC.
+ * Implementa las operaciones CRUD y consultas auxiliares utilizadas por la aplicación.
  */
+
 public class PedidoDAO {
 
     public boolean guardar(Pedido pedido) {
 
         String sql = """
-                INSERT INTO pedido  (direccion, tipo, estado) VALUES (?, ?, ?)""";
+                INSERT INTO pedido (direccion, tipo, estado)
+                VALUES (?, ?, ?)
+                """;
 
-        try ( Connection conexion = ConexionBD.obtenerConexion();
+        try (
+                Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement statement = conexion.prepareStatement(
+                        sql,
+                        Statement.RETURN_GENERATED_KEYS
+                )
+        ) {
 
-        PreparedStatement statement = conexion.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS)
-
-        ){
             statement.setString(
                     1,
                     pedido.getDireccion()
@@ -50,7 +56,6 @@ public class PedidoDAO {
                     if (claves.next()) {
 
                         int idGenerado = claves.getInt(1);
-
                         pedido.setIdPedido(idGenerado);
 
                         return true;
@@ -67,6 +72,43 @@ public class PedidoDAO {
         }
 
         return false;
+    }
+
+    public boolean create(
+            String direccion,
+            String tipo,
+            String estado
+    ) {
+
+        String sql = """
+                INSERT INTO pedido (direccion, tipo, estado)
+                VALUES (?, ?, ?)
+                """;
+
+        try (
+                Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql)
+        ) {
+
+            statement.setString(1, direccion);
+            statement.setString(2, tipo);
+            statement.setString(3, estado);
+
+            int filasAfectadas =
+                    statement.executeUpdate();
+
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al crear pedido: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
     }
 
     private String obtenerTipoPedido(Pedido pedido) {
@@ -88,22 +130,34 @@ public class PedidoDAO {
         );
     }
 
-    public boolean actualizarEstado(int idPedido, String nuevoEstado) {
+    public boolean actualizarEstado(
+            int idPedido,
+            String nuevoEstado
+    ) {
 
         String sql = """
-            UPDATE pedido
-            SET estado = ?
-            WHERE id = ?
-            """;
+                UPDATE pedido
+                SET estado = ?
+                WHERE id = ?
+                """;
 
         try (
-                Connection conexion = ConexionBD.obtenerConexion();
+                Connection conexion =
+                        ConexionBD.obtenerConexion();
+
                 PreparedStatement statement =
                         conexion.prepareStatement(sql)
         ) {
 
-            statement.setString(1, nuevoEstado);
-            statement.setInt(2, idPedido);
+            statement.setString(
+                    1,
+                    nuevoEstado
+            );
+
+            statement.setInt(
+                    2,
+                    idPedido
+            );
 
             int filasAfectadas =
                     statement.executeUpdate();
@@ -123,40 +177,46 @@ public class PedidoDAO {
 
     public List<Object[]> listarTodos() {
 
-        List<Object[]> pedidos = new ArrayList<>();
+        List<Object[]> pedidos =
+                new ArrayList<>();
 
         String sql = """
-            SELECT
-                p.id,
-                p.direccion,
-                p.tipo,
-                p.estado,
-                r.nombre AS repartidor
-            FROM pedido p
-            LEFT JOIN entrega e
-                ON p.id = e.id_pedido
-            LEFT JOIN repartidor r
-                ON e.id_repartidor = r.id
-            ORDER BY p.id
-            """;
+                SELECT
+                    p.id,
+                    p.direccion,
+                    p.tipo,
+                    p.estado,
+                    r.nombre AS repartidor
+                FROM pedido p
+                LEFT JOIN entrega e
+                    ON p.id = e.id_pedido
+                LEFT JOIN repartidor r
+                    ON e.id_repartidor = r.id
+                ORDER BY p.id
+                """;
 
         try (
-                Connection conexion = ConexionBD.obtenerConexion();
+                Connection conexion =
+                        ConexionBD.obtenerConexion();
+
                 PreparedStatement statement =
                         conexion.prepareStatement(sql);
+
                 ResultSet resultado =
                         statement.executeQuery()
         ) {
 
             while (resultado.next()) {
 
-                pedidos.add(new Object[]{
-                        resultado.getInt("id"),
-                        resultado.getString("direccion"),
-                        resultado.getString("tipo"),
-                        resultado.getString("estado"),
-                        resultado.getString("repartidor")
-                });
+                pedidos.add(
+                        new Object[]{
+                                resultado.getInt("id"),
+                                resultado.getString("direccion"),
+                                resultado.getString("tipo"),
+                                resultado.getString("estado"),
+                                resultado.getString("repartidor")
+                        }
+                );
             }
 
         } catch (SQLException e) {
@@ -170,26 +230,39 @@ public class PedidoDAO {
         return pedidos;
     }
 
+    public List<Object[]> readAll() {
+        return listarTodos();
+    }
+
     public List<Integer> listarPendientes() {
 
-        List<Integer> pedidosPendientes = new ArrayList<>();
+        List<Integer> pedidosPendientes =
+                new ArrayList<>();
 
         String sql = """
-            SELECT id
-            FROM pedido
-            WHERE estado = ?
-            ORDER BY id
-            """;
+                SELECT id
+                FROM pedido
+                WHERE estado = ?
+                ORDER BY id
+                """;
 
         try (
-                Connection conexion = ConexionBD.obtenerConexion();
+                Connection conexion =
+                        ConexionBD.obtenerConexion();
+
                 PreparedStatement statement =
                         conexion.prepareStatement(sql)
         ) {
 
-            statement.setString(1, "PENDIENTE");
+            statement.setString(
+                    1,
+                    "PENDIENTE"
+            );
 
-            try (ResultSet resultado = statement.executeQuery()) {
+            try (
+                    ResultSet resultado =
+                            statement.executeQuery()
+            ) {
 
                 while (resultado.next()) {
 
@@ -209,5 +282,81 @@ public class PedidoDAO {
 
         return pedidosPendientes;
     }
-}
 
+    public boolean update(
+            int id,
+            String direccion,
+            String tipo,
+            String estado
+    ) {
+
+        String sql = """
+                UPDATE pedido
+                SET direccion = ?,
+                    tipo = ?,
+                    estado = ?
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conexion =
+                        ConexionBD.obtenerConexion();
+
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql)
+        ) {
+
+            statement.setString(1, direccion);
+            statement.setString(2, tipo);
+            statement.setString(3, estado);
+            statement.setInt(4, id);
+
+            int filasAfectadas =
+                    statement.executeUpdate();
+
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al actualizar pedido: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+
+    public boolean delete(int id) {
+
+        String sql = """
+                DELETE FROM pedido
+                WHERE id = ?
+                """;
+
+        try (
+                Connection conexion =
+                        ConexionBD.obtenerConexion();
+
+                PreparedStatement statement =
+                        conexion.prepareStatement(sql)
+        ) {
+
+            statement.setInt(1, id);
+
+            int filasAfectadas =
+                    statement.executeUpdate();
+
+            return filasAfectadas > 0;
+
+        } catch (SQLException e) {
+
+            System.out.println(
+                    "Error al eliminar pedido: "
+                            + e.getMessage()
+            );
+
+            return false;
+        }
+    }
+}

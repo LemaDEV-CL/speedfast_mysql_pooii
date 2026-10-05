@@ -4,8 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Muestra el menú de SpeedFast con Swing.
- * Abre las ventanas de registro, listado y asignación conectadas con MySQL.
+ * Muestra el menú principal de SpeedFast.
+ * Permite acceder a la gestión de repartidores, pedidos y entregas.
  */
 public class VentanaPrincipal extends javax.swing.JFrame {
 
@@ -17,31 +17,34 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         setLayout(new GridLayout(3, 1, 10, 10));
 
-        JButton btnRegistrar = new JButton("Registrar pedido");
-        JButton btnListar = new JButton("Listar pedidos");
-        JButton btnIniciarEntrega = new JButton("Asignar repartidor / Iniciar entrega");
+        JButton btnGestionRepartidores = new JButton("Gestión de Repartidores");
+        JButton btnGestionEntregas = new JButton("Gestión de entregas");
+        JButton btnGestionPedidos = new JButton("Gestión de pedidos");
 
-        add(btnRegistrar);
-        add(btnListar);
-
-        btnListar.addActionListener(e -> {
-            VentanaListaPedidos ventana = new VentanaListaPedidos();
+        btnGestionRepartidores.addActionListener(e -> {
+            VentanaGestionRepartidores ventana = new VentanaGestionRepartidores();
             ventana.setVisible(true);
         });
 
-        add(btnIniciarEntrega);
+        btnGestionEntregas.addActionListener(
+                e -> new VentanaGestionEntregas()
+                        .setVisible(true)
+        );
 
-        btnIniciarEntrega.addActionListener(e -> {
-            VentanaAsignarRepartidor ventana =
-                    new VentanaAsignarRepartidor();
+        btnGestionPedidos.addActionListener(
+                e -> new VentanaGestionPedidos()
+                        .setVisible(true)
+        );
 
-            ventana.setVisible(true);
-        });
+        add(btnGestionRepartidores);
+        add(btnGestionPedidos);
+        add(btnGestionEntregas);
 
-        btnRegistrar.addActionListener(e -> {
-            VentanaRegistroPedido ventana = new VentanaRegistroPedido();
-            ventana.setVisible(true);
-        });
+
+
+
     }
+
+
 
 }

@@ -1,6 +1,6 @@
 package cl.lema.interfaces;
 /**
- * Define la acción de cancelar un pedido usada en consola.
+ * Define el comportamiento necesario para cancelar un pedido.
  */
 public interface Cancelable {
 

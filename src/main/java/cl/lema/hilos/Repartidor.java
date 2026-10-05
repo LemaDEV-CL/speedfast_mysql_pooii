@@ -5,7 +5,8 @@ import cl.lema.models.Pedido;
 import cl.lema.servicio.ZonaDeCarga;
 
 /**
- * Representa al repartidor con su ID y nombre consultados desde MySQL.
+ * Representa un repartidor ejecutado mediante Runnable.
+ * Se utiliza en la simulación concurrente desarrollada en semanas anteriores.
  */
 
 public class Repartidor implements Runnable {

@@ -6,8 +6,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Mantiene la cola compartida de pedidos para la simulación con hilos.
- * Se conserva de semanas anteriores y no participa en el flujo Swing con MySQL.
+ * Gestiona la cola compartida de pedidos utilizada en la simulación con hilos.
+ * Se conserva como parte de las funcionalidades desarrolladas anteriormente.
  */
 
 public class ZonaDeCarga {
@@ -15,20 +15,11 @@ public class ZonaDeCarga {
     private final BlockingQueue<Pedido> colaPedidos;
     private final ReentrantLock lock;
 
-    /**
-     * Crea una zona de carga vacía con su cola de pedidos y su mecanismo de bloqueo.
-     */
     public ZonaDeCarga() {
         colaPedidos = new LinkedBlockingQueue<>();
         lock = new ReentrantLock();
     }
 
-    /**
-     * Agrega un pedido a la cola compartida de la zona de carga.
-     *
-     * @param pedido pedido que quedará disponible para los repartidores
-     * @throws InterruptedException si el hilo es interrumpido mientras agrega el pedido
-     */
     public void agregarPedido(Pedido pedido) throws InterruptedException {
         lock.lock();
 
@@ -40,11 +31,6 @@ public class ZonaDeCarga {
         }
     }
 
-    /**
-     * Retira el siguiente pedido disponible desde la cola compartida.
-     *
-     * @return pedido retirado o null si no existen pedidos disponibles
-     */
     public Pedido retirarPedido() {
         lock.lock();
 
@@ -55,11 +41,6 @@ public class ZonaDeCarga {
         }
     }
 
-    /**
-     * Consulta la cantidad de pedidos que quedan en la zona de carga.
-     *
-     * @return número de pedidos pendientes en la cola
-     */
     public int cantidadPedidos() {
         return colaPedidos.size();
     }

@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Conecta la aplicación con MySQL mediante JDBC.
- * Crea la base de datos y las tablas si no existen y carga los repartidores iniciales.
+ * Gestiona la conexión de SpeedFast con MySQL mediante JDBC.
+ * Crea la base de datos y las tablas necesarias si no existen.
  */
 public class ConexionBD {
 
@@ -65,16 +65,6 @@ public class ConexionBD {
             statement.executeUpdate(sqlRepartidor);
             statement.executeUpdate(sqlPedido);
             statement.executeUpdate(sqlEntrega);
-
-            String sqlRepartidoresIniciales = """
-                INSERT IGNORE INTO repartidor (nombre)
-                VALUES
-                    ('Iván'),
-                    ('Luis'),
-                    ('Pedro')
-                """;
-
-            statement.executeUpdate(sqlRepartidoresIniciales);
 
             System.out.println("Base de datos inicializada correctamente.");
 

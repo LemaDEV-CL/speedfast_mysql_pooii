@@ -7,8 +7,8 @@ import cl.lema.dao.PedidoDAO;
 import java.util.List;
 
 /**
- * Muestra los pedidos, sus estados y repartidores consultados desde MySQL.
- * El botón Actualizar vuelve a cargar la tabla mediante PedidoDAO.
+ * Muestra los pedidos almacenados en MySQL mediante una JTable.
+ * Permite actualizar la información consultando nuevamente PedidoDAO.
  */
 public class VentanaListaPedidos extends JFrame {
 

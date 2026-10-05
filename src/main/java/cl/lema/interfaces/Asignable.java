@@ -1,7 +1,7 @@
 package cl.lema.interfaces;
 
 /**
- * Define la acción de asignar repartidor usada por los pedidos en consola.
+ * Define el comportamiento necesario para asignar un repartidor a un pedido.
  */
 public interface Asignable {
 

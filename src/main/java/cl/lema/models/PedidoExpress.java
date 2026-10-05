@@ -5,8 +5,8 @@ import cl.lema.interfaces.Cancelable;
 import cl.lema.interfaces.Despachable;
 
 /**
- * Representa un pedido express asociado a una tienda.
- * Calcula el tiempo de entrega según la distancia y se registra como EXPRESS en MySQL.
+ * Representa un pedido express.
+ * Incluye la tienda asociada al pedido.
  */
 public class PedidoExpress extends Pedido implements Asignable, Cancelable, Despachable {
 

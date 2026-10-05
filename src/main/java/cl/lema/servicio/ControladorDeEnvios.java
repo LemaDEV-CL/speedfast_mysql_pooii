@@ -8,8 +8,8 @@ import java.util.List;
 import cl.lema.dao.PedidoDAO;
 
 /**
- * Registra pedidos en MySQL mediante PedidoDAO.
- * Conserva las acciones y el historial en memoria de semanas anteriores.
+ * Coordina operaciones relacionadas con los pedidos de SpeedFast.
+ * Conserva funcionalidades y lógica desarrolladas en semanas anteriores.
  */
 public class ControladorDeEnvios implements Rastreable {
 

@@ -5,8 +5,8 @@ import cl.lema.interfaces.Cancelable;
 import cl.lema.interfaces.Despachable;
 
 /**
- * Representa un pedido de comida con restaurante y tiempo de preparación.
- * Calcula el tiempo de entrega según la distancia y se registra como COMIDA en MySQL.
+ * Representa un pedido de comida.
+ * Incluye información del restaurante y tiempo de preparación.
  */
 public class PedidoComida extends Pedido implements Asignable, Cancelable, Despachable{
 

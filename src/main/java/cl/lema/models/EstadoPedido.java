@@ -1,7 +1,8 @@
 package cl.lema.models;
 
 /**
- * Define los estados de los pedidos usados en la aplicación y la simulación de entregas.
+ * Representa un pedido express.
+ * Incluye la tienda asociada al pedido.
  */
 public enum EstadoPedido {
 

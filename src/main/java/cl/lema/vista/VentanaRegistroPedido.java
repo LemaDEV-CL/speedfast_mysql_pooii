@@ -7,8 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Permite registrar pedidos de comida, encomienda y express con validaciones.
- * Solicita al controlador guardarlos en MySQL y muestra el ID generado.
+ * Permite registrar pedidos utilizando el formulario desarrollado en semanas anteriores.
+ * Conserva las validaciones y funcionalidades previas del proyecto SpeedFast.
  */
 public class VentanaRegistroPedido extends JFrame {
 

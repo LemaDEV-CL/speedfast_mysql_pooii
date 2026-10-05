@@ -6,7 +6,8 @@ import cl.lema.vista.VentanaPrincipal;
 import javax.swing.*;
 
 /**
- * Inicia SpeedFast y abre la ventana principal con Swing.
+ * Punto de entrada de la aplicación SpeedFast.
+ * Inicia la interfaz gráfica y abre la ventana principal.
  */
 public class Main {
 

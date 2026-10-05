@@ -1,6 +1,6 @@
 package cl.lema.interfaces;
 /**
- * Define la acción de despachar un pedido usada en consola.
+ * Define el comportamiento necesario para despachar un pedido.
  */
 public interface Despachable {
 
